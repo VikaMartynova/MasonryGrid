@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 
-import { PEXELS_API_KEY } from '../config'
-import type { PhotoType } from './types'
+import { PEXELS_API_KEY } from '../../config'
+import type { PhotoType } from '../types'
 
 const fetchPhotos = async (
   page: number,

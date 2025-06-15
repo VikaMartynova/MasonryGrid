@@ -1,9 +1,10 @@
-import React, { useState } from 'react'
+import React, { useState, useCallback } from 'react'
 import styled from 'styled-components'
 
 import { PhotoComponent } from './components'
-import { useFetchPhotos } from './useFetchPhotos'
+import { useFetchPhotos, useInfiniteScroll } from './hooks'
 import { PHOTOS_PER_PAGE } from './constants'
+import type { PhotoType } from './types'
 
 export const PhotoGrid = styled.div`
   display: grid;
@@ -23,11 +24,18 @@ const Header = () => {
 function App() {
   const [page, setPage] = useState(1)
   const { photos } = useFetchPhotos(page, PHOTOS_PER_PAGE)
+
+  const setNextPage = useCallback(() => {
+    setPage((prevPage) => prevPage + 1)
+  }, [])
+
+  const loaderRef = useInfiniteScroll(setNextPage)
+
   return (
     <>
       <Header />
       <PhotoGrid>
-        {photos.map((photo, index) => {
+        {photos.map((photo: PhotoType, index: number) => {
           return (
             <div key={`photo.id_${index}`}>
               <PhotoComponent photo={photo} onClick={() => {}} />
@@ -35,6 +43,7 @@ function App() {
           )
         })}
       </PhotoGrid>
+      <div ref={loaderRef} style={{ height: '1px' }} />
     </>
   )
 }
