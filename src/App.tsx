@@ -1,50 +1,19 @@
-import React, { useState, useCallback } from 'react'
-import styled from 'styled-components'
+import { Suspense, lazy } from 'react'
+import { Routes, Route } from 'react-router-dom'
+import HomePage from './pages/HomePage'
 
-import { PhotoComponent } from './components'
-import { useFetchPhotos, useInfiniteScroll } from './hooks'
-import { PHOTOS_PER_PAGE } from './constants'
-import type { PhotoType } from './types'
-
-export const PhotoGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 16px;
-  padding: 16px;
-`
-
-const Header = () => {
-  return (
-    <header>
-      <h1>My App</h1>
-    </header>
-  )
-}
+const DetailPage = lazy(
+  () => import(/* webpackChunkName: "detail-page" */ './pages/DetailPage')
+)
 
 function App() {
-  const [page, setPage] = useState(1)
-  const { photos } = useFetchPhotos(page, PHOTOS_PER_PAGE)
-
-  const setNextPage = useCallback(() => {
-    setPage((prevPage) => prevPage + 1)
-  }, [])
-
-  const loaderRef = useInfiniteScroll(setNextPage)
-
   return (
-    <>
-      <Header />
-      <PhotoGrid>
-        {photos.map((photo: PhotoType, index: number) => {
-          return (
-            <div key={`photo.id_${index}`}>
-              <PhotoComponent photo={photo} onClick={() => {}} />
-            </div>
-          )
-        })}
-      </PhotoGrid>
-      <div ref={loaderRef} style={{ height: '1px' }} />
-    </>
+    <Suspense fallback={<div>Loading...</div>}>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/detail/:id" element={<DetailPage />} />
+      </Routes>
+    </Suspense>
   )
 }
 
