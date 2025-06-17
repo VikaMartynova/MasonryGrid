@@ -1,11 +1,19 @@
-import React, { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import styled from 'styled-components'
 import { useNavigate } from 'react-router-dom'
 
 import { PhotoComponent, Header } from '../components'
-import { useFetchPhotos, useInfiniteScroll } from '../hooks'
+import { useInfiniteScroll, useFetchData } from '../hooks'
 import { PHOTOS_PER_PAGE } from '../constants'
 import type { PhotoType } from '../types'
+
+const PageContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100vw;
+  min-height: 100vh;
+`
 
 const PhotoGrid = styled.div`
   display: grid;
@@ -22,8 +30,17 @@ const PhoroWrapper = styled.div`
 
 const HomePage = () => {
   const [page, setPage] = useState(1)
-  const { photos } = useFetchPhotos(page, PHOTOS_PER_PAGE)
   const navigate = useNavigate()
+  const [allPhotos, setAllPhotos] = useState<PhotoType[]>([])
+  const { data, loading, error } = useFetchData<{ photos: PhotoType[] }>(
+    `curated?page=${page}&per_page=${PHOTOS_PER_PAGE}`
+  )
+
+  useEffect(() => {
+    if (data && data?.photos) {
+      setAllPhotos((prev) => [...prev, ...data.photos])
+    }
+  }, [data])
 
   const setNextPage = useCallback(() => {
     setPage((prevPage) => prevPage + 1)
@@ -36,22 +53,26 @@ const HomePage = () => {
   }, [])
 
   return (
-    <>
+    <PageContainer>
       <Header title="Gallery" />
-      <PhotoGrid>
-        {photos.map((photo: PhotoType, index: number) => {
-          return (
-            <PhoroWrapper
-              key={`photo.id_${photo.id}_${index}`}
-              onClick={() => navigateToDetail(photo.id)}
-            >
-              <PhotoComponent photoSrc={photo.src} photoAlt={photo.alt} />
-            </PhoroWrapper>
-          )
-        })}
-      </PhotoGrid>
+      {allPhotos.length ? (
+        <PhotoGrid>
+          {allPhotos.map((photo: PhotoType, index: number) => {
+            return (
+              <PhoroWrapper
+                key={`photo.id_${photo.id}_${index}`}
+                onClick={() => navigateToDetail(photo.id)}
+              >
+                <PhotoComponent photoSrc={photo.src} photoAlt={photo.alt} />
+              </PhoroWrapper>
+            )
+          })}
+        </PhotoGrid>
+      ) : null}
+      {loading ? <div>Loading...</div> : null}
+      {error ? <div>Error: {error}</div> : null}
       <div ref={loaderRef} style={{ height: '1px' }} />
-    </>
+    </PageContainer>
   )
 }
 

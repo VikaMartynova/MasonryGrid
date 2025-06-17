@@ -1,7 +1,6 @@
-import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { PhotoComponent, Header } from '../components'
-import { useFetchPhotoDetail } from '../hooks'
+import { useFetchData } from '../hooks'
 import styled from 'styled-components'
 
 import type { PhotoType } from '../types'
@@ -27,10 +26,6 @@ export const PhotoInfo = styled.div`
     display: inline-block;
     margin-top: 1px;
     text-decoration: underline;
-
-    &:hover {
-      text-decoration: underline;
-    }
   }
 `
 
@@ -43,38 +38,38 @@ const PhotoWrapper = styled.div`
 
 export const DetailPage = () => {
   const { id } = useParams<{ id: string }>()
-  const [photoDetail, setPhotoDetail] = useState<PhotoType | null>(null)
-
-  useEffect(() => {
-    if (id) {
-      useFetchPhotoDetail(id).then((data) => {
-        setPhotoDetail(data)
-      })
-    }
-  }, [id])
-
-  if (!photoDetail) {
-    return <div>Loading...</div>
-  }
+  const {
+    data: photoDetail,
+    loading,
+    error,
+  } = useFetchData<PhotoType>(`photos/${id}`)
 
   return (
-    <PageContainer gradientColor={photoDetail.avg_color}>
+    <PageContainer gradientColor={photoDetail?.avg_color}>
       <PhotoInfo>
-        <Header title={photoDetail.alt || `Photo_${photoDetail.id}`} />
-        <p>By {photoDetail.photographer}</p>
-        <a
-          href={photoDetail.photographer_url}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Visit Photographer’s Profile
-        </a>
-        <PhotoWrapper>
-          <PhotoComponent
-            photoSrc={photoDetail.src}
-            photoAlt={photoDetail.alt}
-          />
-        </PhotoWrapper>
+        {photoDetail ? (
+          <>
+            <Header title={photoDetail.alt || `Photo_${photoDetail.id}`} />
+            <p>By {photoDetail.photographer}</p>
+            <a
+              href={photoDetail.photographer_url}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Visit Photographer’s Profile
+            </a>
+            <PhotoWrapper>
+              <PhotoComponent
+                photoSrc={photoDetail.src}
+                photoAlt={photoDetail.alt}
+              />
+            </PhotoWrapper>
+          </>
+        ) : loading ? (
+          <div>Loading...</div>
+        ) : error ? (
+          <div>Error: {error}</div>
+        ) : null}
       </PhotoInfo>
     </PageContainer>
   )

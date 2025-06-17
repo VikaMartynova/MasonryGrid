@@ -5,7 +5,7 @@
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  background-color: #363535;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -19,7 +19,7 @@ p {
 
 a {
   font-weight: 500;
-  color: #000;
+  color: #fff;
   text-decoration: inherit;
 }
 a:hover {
@@ -62,6 +62,9 @@ button:focus-visible {
   :root {
     color: #213547;
     background-color: #ffffff;
+  }
+  a {
+    color: #000;
   }
   a:hover {
     color: #747bff;
