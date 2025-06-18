@@ -22,10 +22,11 @@ const PhotoGrid = styled.div`
   padding: 16px;
 `
 
-const PhoroWrapper = styled.div`
+const PhoroWrapper = styled.div<{ bgColor?: string }>`
   aspect-ratio: 4 / 3;
   overflow: hidden;
   border-radius: 8px;
+  background-color: ${({ bgColor }) => bgColor || '#eee'};
 `
 
 const HomePage = () => {
@@ -60,6 +61,7 @@ const HomePage = () => {
           {allPhotos.map((photo: PhotoType, index: number) => {
             return (
               <PhoroWrapper
+                bgColor={photo.avg_color}
                 key={`photo.id_${photo.id}_${index}`}
                 onClick={() => navigateToDetail(photo.id)}
               >
