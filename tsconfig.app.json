@@ -1,31 +1,3 @@
-// {
-//   "compilerOptions": {
-//     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
-//     "target": "ES2020",
-//     "useDefineForClassFields": true,
-//     "lib": ["ES2020", "DOM", "DOM.Iterable"],
-//     "module": "ESNext",
-//     "skipLibCheck": true,
-
-//     /* Bundler mode */
-//     "moduleResolution": "bundler",
-//     "allowImportingTsExtensions": true,
-//     "verbatimModuleSyntax": false,
-//     "moduleDetection": "force",
-//     "noEmit": true,
-//     "jsx": "react-jsx",
-
-//     /* Linting */
-//     "strict": true,
-//     "noUnusedLocals": true,
-//     "noUnusedParameters": true,
-//     "erasableSyntaxOnly": true,
-//     "noFallthroughCasesInSwitch": true,
-//     "noUncheckedSideEffectImports": true,
-//     "types": ["vite/client", "react", "react-dom"],
-//   },
-//   "include": ["src"]
-// }
 {
   "compilerOptions": {
     "target": "ES2020",
@@ -33,7 +5,7 @@
     "module": "ESNext",
     "moduleResolution": "node",  //"bundler",
     "jsx": "react-jsx", // ✅ Enables JSX with the modern React transform
-    "types": ["vite/client", "react", "react-dom"], // ✅ Loads React/DOM types
+    "types": ["vite/client", "react", "react-dom", "jest", "@testing-library/jest-dom", "@testing-library/react"], // ✅ Loads React/DOM types
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
